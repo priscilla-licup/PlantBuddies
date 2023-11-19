@@ -8,7 +8,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.ActivityMainBinding
-
+//kenny comment
 class MainActivity : AppCompatActivity() {
 
 private lateinit var binding: ActivityMainBinding
