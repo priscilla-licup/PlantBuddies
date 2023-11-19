@@ -32,5 +32,9 @@ class NotesAdapter(private var notesList: MutableList<Note>) : RecyclerView.Adap
 
     override fun getItemCount() = notesList.size
 
+    interface NoteActionsListener {
+        fun onNoteEdit(note: Note)
+        fun onNoteDelete(note: Note)
+    }
 
 }
