@@ -1,5 +1,6 @@
 package com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
@@ -31,6 +32,9 @@ class Notes : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var notesAdapter: NotesAdapter
     private var notesList: MutableList<Note> = mutableListOf()
+
+    //
+    private val ADD_NOTE_REQUEST = 1
 
     // Adding a new note
     private fun showAddNoteDialog() {
@@ -97,7 +101,7 @@ class Notes : Fragment() {
             // Show a dialog or navigate to another fragment to add a new note
             // showAddNoteDialog()
             val intent = Intent(context, AddNoteActivity::class.java)
-            startActivityForResult(intent, 1)
+            startActivityForResult(intent, ADD_NOTE_REQUEST)
         }
 
         return root
@@ -107,4 +111,21 @@ class Notes : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == ADD_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
+            data?.let {
+                val title = it.getStringExtra("EXTRA_NOTE_TITLE") ?: ""
+                val content = it.getStringExtra("EXTRA_NOTE_CONTENT") ?: ""
+                val date = it.getStringExtra("EXTRA_NOTE_DATE") ?: ""
+
+                // Create a new Note object and add it to your list
+                val newNote = Note(Random.nextInt(), title, content, date)
+                addNewNote(newNote)
+            }
+        }
+    }
+
 }
