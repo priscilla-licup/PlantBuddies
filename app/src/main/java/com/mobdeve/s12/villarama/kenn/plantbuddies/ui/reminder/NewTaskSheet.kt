@@ -1,15 +1,23 @@
 package com.mobdeve.s12.villarama.kenn.plantbuddies.ui.reminder
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentNewTaskSheetBinding
 import java.time.LocalTime
+
+
 
 class NewTaskSheet(var taskItem: TaskItem?) : BottomSheetDialogFragment()
 {
@@ -27,8 +35,9 @@ class NewTaskSheet(var taskItem: TaskItem?) : BottomSheetDialogFragment()
             val editable = Editable.Factory.getInstance()
             binding.name.text = editable.newEditable(taskItem!!.name)
             binding.desc.text = editable.newEditable(taskItem!!.desc)
-            if(taskItem!!.dueTime != null){
-                dueTime = taskItem!!.dueTime!!
+            if(taskItem!!.dueTime() != null)
+            {
+                dueTime = taskItem!!.dueTime()!!
                 updateTimeButtonText()
             }
         }
@@ -54,7 +63,7 @@ class NewTaskSheet(var taskItem: TaskItem?) : BottomSheetDialogFragment()
             updateTimeButtonText()
         }
         val dialog = TimePickerDialog(activity, listener, dueTime!!.hour, dueTime!!.minute, true)
-        dialog.setTitle("Task Due")
+        dialog.setTitle("Reminder Due")
         dialog.show()
 
     }
@@ -73,18 +82,61 @@ class NewTaskSheet(var taskItem: TaskItem?) : BottomSheetDialogFragment()
     {
         val name = binding.name.text.toString()
         val desc = binding.desc.text.toString()
+        val dueTimeString = if(dueTime == null) null else TaskItem.timeFormatter.format(dueTime)
         if(taskItem == null)
         {
-            val newTask = TaskItem(name,desc,dueTime,null)
+            val newTask = TaskItem(name,desc, dueTimeString,null)
             taskViewModel.addTaskItem(newTask)
+            scheduleAlarm(newTask)
         }
         else
         {
-            taskViewModel.updateTaskItem(taskItem!!.id, name, desc, dueTime)
+            taskItem!!.name = name
+            taskItem!!.desc = name
+            taskItem!!.dueTimeString = dueTimeString
+
+            taskViewModel.updateTaskItem(taskItem!!)
+            scheduleAlarm(taskItem!!)
         }
         binding.name.setText("")
         binding.desc.setText("")
         dismiss()
     }
+    private fun scheduleAlarm(taskItem: TaskItem) {
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(requireContext(), AlarmReceiver::class.java)
+        intent.putExtra(AlarmReceiver.TASK_NAME_EXTRA, taskItem.name)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(),
+            taskItem.id,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val currentTimeMillis = System.currentTimeMillis()
+        val dueTimeMillis = calculateMillisOfDay(taskItem.dueTime()) ?: return
+
+        val triggerTime = currentTimeMillis + (dueTimeMillis - System.currentTimeMillis())
+
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            triggerTime,
+            pendingIntent
+        )
+        Log.d("AlarmDebug", "currentTimeMillis: $currentTimeMillis")
+        Log.d("AlarmDebug", "dueTimeMillis: $dueTimeMillis")
+        Log.d("AlarmDebug", "triggerTime: $triggerTime")
+
+        Toast.makeText(requireContext(), "Reminder scheduled for: ${taskItem.name}", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun calculateMillisOfDay(localTime: LocalTime?): Long? {
+        return localTime?.let {
+            it.toSecondOfDay().toLong() * 1000
+        }
+    }
+
+
 
 }
