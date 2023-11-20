@@ -6,8 +6,15 @@ import androidx.lifecycle.ViewModel
 
 class NotesViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is notes Fragment"
+
+    private val _notesList = MutableLiveData<MutableList<Note>>().apply {
+        value = mutableListOf()
     }
-    val text: LiveData<String> = _text
+    val notesList: LiveData<MutableList<Note>> = _notesList
+
+    fun addNewNote(note: Note) {
+        val currentList = _notesList.value ?: mutableListOf()
+        currentList.add(note)
+        _notesList.value = currentList
+    }
 }
