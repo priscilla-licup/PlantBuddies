@@ -41,7 +41,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         context?.let {
             val builder = NotificationCompat.Builder(it, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.drawable.ic_gardenprofile)
                 .setContentTitle("PlantBuddy: Reminder")
                 .setContentText("Reminding you of '$taskName'!")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
