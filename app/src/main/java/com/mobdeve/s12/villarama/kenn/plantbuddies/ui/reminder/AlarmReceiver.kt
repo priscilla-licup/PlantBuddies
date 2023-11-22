@@ -12,6 +12,9 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContentProviderCompat.requireContext
+import com.mobdeve.s12.villarama.kenn.plantbuddies.MainActivity
+import com.mobdeve.s12.villarama.kenn.plantbuddies.R
 
 class AlarmReceiver : BroadcastReceiver() {
 
@@ -23,6 +26,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
 
     override fun onReceive(context: Context?, intent: Intent?) {
+
         val taskName = intent?.getStringExtra(TASK_NAME_EXTRA)
         if (!taskName.isNullOrBlank()) {
             showNotification(context, taskName)
@@ -37,7 +41,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         context?.let {
             val builder = NotificationCompat.Builder(it, CHANNEL_ID)
-                //.setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.drawable.ic_launcher_background)
                 .setContentTitle("PlantBuddy: Reminder")
                 .setContentText("Reminding you of '$taskName'!")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)

@@ -15,8 +15,9 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentNewTaskSheetBinding
+import java.time.LocalDate
 import java.time.LocalTime
-
+import java.time.ZoneId
 
 
 class NewTaskSheet(var taskItem: TaskItem?) : BottomSheetDialogFragment()
@@ -24,6 +25,7 @@ class NewTaskSheet(var taskItem: TaskItem?) : BottomSheetDialogFragment()
     private lateinit var binding: FragmentNewTaskSheetBinding
     private lateinit var taskViewModel: TaskViewModel
     private var dueTime: LocalTime? = null
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,7 +48,13 @@ class NewTaskSheet(var taskItem: TaskItem?) : BottomSheetDialogFragment()
             binding.taskTitle.text = "New Task"
         }
 
-        taskViewModel = ViewModelProvider(activity).get(TaskViewModel::class.java)
+        // try to fix class instance error
+        val taskItemDao = TaskItemDatabase.getDatabase(requireContext()).taskItemDao()
+        val repository = TaskItemRepository(taskItemDao)
+        val factory = TaskItemModelFactory(repository)
+        taskViewModel = ViewModelProvider(this, factory).get(TaskViewModel::class.java)
+
+//        taskViewModel = ViewModelProvider(activity).get(TaskViewModel::class.java)
         binding.saveButton.setOnClickListener {
             saveAction()
         }
@@ -132,8 +140,13 @@ class NewTaskSheet(var taskItem: TaskItem?) : BottomSheetDialogFragment()
     }
 
     private fun calculateMillisOfDay(localTime: LocalTime?): Long? {
+//        return localTime?.let {
+//            it.toSecondOfDay().toLong() * 1000
+//        }
+
         return localTime?.let {
-            it.toSecondOfDay().toLong() * 1000
+            val now = LocalDate.now().atTime(it)
+            return now.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         }
     }
 
