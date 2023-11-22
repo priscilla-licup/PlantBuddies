@@ -1,22 +1,66 @@
 package com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.mobdeve.s12.villarama.kenn.plantbuddies.R
 import java.util.Date
 import java.util.Locale
 
 class AddNoteActivity : AppCompatActivity() {
 
+    private val SELECT_PICTURE_REQUEST = 3
+    private var selectedImageUri: Uri? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_note)
 
+        // Check if there's existing data passed to this activity
+        val existingNoteId = intent.getIntExtra("EXTRA_NOTE_ID", -1) // Default to -1 if not provided
+        val existingTitle = intent.getStringExtra("EXTRA_NOTE_TITLE")
+        val existingContent = intent.getStringExtra("EXTRA_NOTE_CONTENT")
+        val existingImageUri = intent.getStringExtra("EXTRA_IMAGE_URI")
+        val existingShovelToggle = intent.getBooleanExtra("EXTRA_SHOVEL_TOGGLE", false)
+        val existingWaterToggle = intent.getBooleanExtra("EXTRA_WATER_TOGGLE", false)
+        val existingSeedsToggle = intent.getBooleanExtra("EXTRA_SEEDS_TOGGLE", false)
+        val existingInsectToggle = intent.getBooleanExtra("EXTRA_INSECT_TOGGLE", false)
+        val existingHarvestToggle = intent.getBooleanExtra("EXTRA_HARVEST_TOGGLE", false)
+
+        Log.d("AddNoteActivity", "Received Image URI for Editing: $existingImageUri")
+
+        // Assuming you have the note ID and access to the ViewModel
+//        notesViewModel.updateNoteImageUri(existingNoteId, existingImageUri)
+
+        // Populate fields if existing data is present
+        if (existingNoteId != -1) {
+            findViewById<EditText>(R.id.etNoteTitle).setText(existingTitle)
+            findViewById<EditText>(R.id.etNoteContent).setText(existingContent)
+            findViewById<ToggleButton>(R.id.toggleButton3).isChecked = existingShovelToggle
+            findViewById<ToggleButton>(R.id.toggleButton4).isChecked = existingWaterToggle
+            findViewById<ToggleButton>(R.id.toggleButton5).isChecked = existingSeedsToggle
+            findViewById<ToggleButton>(R.id.toggleButton6).isChecked = existingInsectToggle
+            findViewById<ToggleButton>(R.id.toggleButton7).isChecked = existingHarvestToggle
+
+            if (!existingImageUri.isNullOrEmpty()) {
+                selectedImageUri = Uri.parse(existingImageUri)
+                findViewById<ImageView>(R.id.ivNoteImage).setImageURI(selectedImageUri)
+            }
+        }
+
+        // Button for adding/editing note
         val btnSaveNote = findViewById<Button>(R.id.btnSaveNote)
         btnSaveNote.setOnClickListener {
             val title = findViewById<EditText>(R.id.etNoteTitle).text.toString()
@@ -24,19 +68,72 @@ class AddNoteActivity : AppCompatActivity() {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val currentDate = dateFormat.format(Date())
 
-            // Validate input...
+            // Retrieve toggle states
+            val shovelToggle = findViewById<ToggleButton>(R.id.toggleButton3).isChecked
+            val waterToggle = findViewById<ToggleButton>(R.id.toggleButton4).isChecked
+            val seedsToggle = findViewById<ToggleButton>(R.id.toggleButton5).isChecked
+            val insectToggle = findViewById<ToggleButton>(R.id.toggleButton6).isChecked
+            val harvestToggle = findViewById<ToggleButton>(R.id.toggleButton7).isChecked
 
-            // Create an Intent to hold the results
+            // Retrieve the image URI (assuming it's saved as a member variable)
+            val imageUri = selectedImageUri?.toString()
+
             val resultIntent = Intent()
+
+            resultIntent.putExtra("EXTRA_NOTE_ID", existingNoteId)  // Include the ID for updating
             resultIntent.putExtra("EXTRA_NOTE_TITLE", title)
             resultIntent.putExtra("EXTRA_NOTE_CONTENT", content)
             resultIntent.putExtra("EXTRA_NOTE_DATE", currentDate)
+            resultIntent.putExtra("EXTRA_IMAGE_URI", imageUri)
+            resultIntent.putExtra("EXTRA_SHOVEL_TOGGLE", shovelToggle)
+            resultIntent.putExtra("EXTRA_WATER_TOGGLE", waterToggle)
+            resultIntent.putExtra("EXTRA_SEEDS_TOGGLE", seedsToggle)
+            resultIntent.putExtra("EXTRA_INSECT_TOGGLE", insectToggle)
+            resultIntent.putExtra("EXTRA_HARVEST_TOGGLE", harvestToggle)
+
+            Log.d("AddNoteActivity", "Adding Image URI: $imageUri")
             setResult(Activity.RESULT_OK, resultIntent)
 
             finish()  // Finish the activity
         }
 
+        // Button for adding pictures to note
+        findViewById<Button>(R.id.btnSelectImage).setOnClickListener {
+//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(this,
+//                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+//                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE)
+//            }
+
+            val selectFileIntent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "image/*"
+            }
+            startActivityForResult(selectFileIntent, SELECT_PICTURE_REQUEST)
+        }
     }
 
-    // Additional methods if needed
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == SELECT_PICTURE_REQUEST && resultCode == Activity.RESULT_OK) {
+//            selectedImageUri = data?.data
+//            Log.d("AddNoteActivity", "Selected Image URI: $selectedImageUri")
+//            findViewById<ImageView>(R.id.ivNoteImage).setImageURI(selectedImageUri)
+//            // You can save the URI or the path of the image to save it with the note
+//        }
+
+        if (requestCode == SELECT_PICTURE_REQUEST && resultCode == Activity.RESULT_OK) {
+            data?.data?.let { uri ->
+                selectedImageUri = uri
+                findViewById<ImageView>(R.id.ivNoteImage).setImageURI(uri)
+
+                // Only take persistable permission if the URI is not null
+                contentResolver.takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+            }
+        }
+    }
 }
