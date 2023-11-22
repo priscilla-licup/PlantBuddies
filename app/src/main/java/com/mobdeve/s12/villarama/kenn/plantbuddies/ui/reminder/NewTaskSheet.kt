@@ -140,9 +140,7 @@ class NewTaskSheet(var taskItem: TaskItem?) : BottomSheetDialogFragment()
     }
 
     private fun calculateMillisOfDay(localTime: LocalTime?): Long? {
-//        return localTime?.let {
-//            it.toSecondOfDay().toLong() * 1000
-//        }
+
 
         return localTime?.let {
             val now = LocalDate.now().atTime(it)
