@@ -34,7 +34,7 @@ class AddNoteActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_note)
 
         // Check if there's existing data passed to this activity
-        val existingNoteId = intent.getIntExtra("EXTRA_NOTE_ID", 0) // Default to -1 if not provided
+        val existingNoteId = intent.getIntExtra("EXTRA_NOTE_ID", 0)
         val existingDate = intent.getStringExtra("EXTRA_NOTE_DATE")
         val existingTitle = intent.getStringExtra("EXTRA_NOTE_TITLE")
         val existingContent = intent.getStringExtra("EXTRA_NOTE_CONTENT")

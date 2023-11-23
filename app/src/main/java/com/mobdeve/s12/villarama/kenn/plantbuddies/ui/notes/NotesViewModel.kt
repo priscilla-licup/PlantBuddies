@@ -20,50 +20,27 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
         AppDatabase::class.java, "plant-buddies-database"
     ).build()
 
-//    private val db: AppDatabase = getApplication<PlantBuddyApplication>().database
-
-//    private val _notesList = MutableLiveData<MutableList<Note>>().apply {
-//        value = mutableListOf()
-//    }
-//    val notesList: LiveData<MutableList<Note>> = _notesList
-
     val notesList: LiveData<List<Note>> = db.notesDao().getAllNotes()
 
-    fun addNewNote(note: Note) {
-//        val currentList = _notesList.value ?: mutableListOf()
-//        currentList.add(note)
-//        _notesList.value = currentList
-
-        viewModelScope.launch(Dispatchers.IO) {
-            db.notesDao().insert(note)
-        }
-
+    fun addNewNote(note: Note) {viewModelScope.launch(Dispatchers.IO) {
         Log.d("ViewModel", "Adding Note: $note")
+        db.notesDao().insert(note)
+    }
     }
 
     fun updateNote(note: Note) {
-//        val currentList = _notesList.value ?: mutableListOf()
-//        val noteIndex = currentList.indexOfFirst { it.id == note.id }
-//        if (noteIndex != -1) {
-//            currentList[noteIndex] = note
-//            _notesList.value = currentList
-//        }
-
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d("ViewModel", "Updating Note: $note")
             db.notesDao().update(note)
         }
-        Log.d("ViewModel", "Updating Note: $note")
     }
 
     fun deleteNote(note: Note) {
-//        val currentList = _notesList.value ?: mutableListOf()
-//        currentList.remove(note)
-//        _notesList.value = currentList
-
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d("ViewModel", "Deleting Note: $note")
             db.notesDao().delete(note)
         }
-        Log.d("ViewModel", "Deleting Note: $note")
+
     }
 
 }

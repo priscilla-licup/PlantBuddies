@@ -64,8 +64,6 @@ class Notes : Fragment(), NoteActionsListener {
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = notesAdapter
-//        notesAdapter = NotesAdapter(notesViewModel.notesList.value ?: mutableListOf(), this)
-//      notesAdapter = NotesAdapter(notesList, this)
 
         notesViewModel.notesList.observe(viewLifecycleOwner, Observer { updatedList ->
             // Convert the List to a MutableList
@@ -118,6 +116,7 @@ class Notes : Fragment(), NoteActionsListener {
                 Log.d("NotesFragment", "New note added: $newNote")
 
             }
+            notesAdapter.notifyDataSetChanged()
         } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
             data?.let {
                 val noteId = it.getIntExtra("EXTRA_NOTE_ID", 0)
@@ -135,6 +134,7 @@ class Notes : Fragment(), NoteActionsListener {
                 notesViewModel.updateNote(updatedNote)
                 Log.d("NotesFragment", "Updated note: $updatedNote")
             }
+            notesAdapter.notifyDataSetChanged()
         }
     }
 
@@ -161,21 +161,6 @@ class Notes : Fragment(), NoteActionsListener {
     }
 
     override fun onNoteDelete(note: Note) {
-//        notesViewModel.deleteNote(note)
-
-//        val noteEntity = Note(
-//            id = note.id,
-//            title = note.title,
-//            content = note.content,
-//            date = note.date,
-//            imageUri = note.imageUri,
-//            toggleShovel = note.toggleShovel,
-//            toggleWater = note.toggleWater,
-//            toggleSeeds = note.toggleSeeds,
-//            toggleInsect = note.toggleInsect,
-//            toggleHarvest = note.toggleHarvest
-//        )
-
         notesViewModel.deleteNote(note)
     }
 
@@ -184,6 +169,7 @@ class Notes : Fragment(), NoteActionsListener {
 
 //        val notesViewModel: NotesViewModel by viewModels()
         notesViewModel.notesList.observe(viewLifecycleOwner, Observer { notes ->
+            Log.d("NotesFragment", "LiveData Observer triggered with notes: $notes")
             // Update your RecyclerView adapter here
             notesAdapter.notesList = notes.toMutableList()
             notesAdapter.notifyDataSetChanged()

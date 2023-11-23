@@ -8,10 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mobdeve.s12.villarama.kenn.plantbuddies.R
 
-interface NoteActionsListener {
-    fun onNoteEdit(note: Note)
-    fun onNoteDelete(note: Note)
-}
 class NotesAdapter(
     var notesList: MutableList<Note>,
     private val listener: NoteActionsListener
