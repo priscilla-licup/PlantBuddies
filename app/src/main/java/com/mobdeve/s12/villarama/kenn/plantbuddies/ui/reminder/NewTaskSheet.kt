@@ -100,7 +100,7 @@ class NewTaskSheet(var taskItem: TaskItem?) : BottomSheetDialogFragment()
         else
         {
             taskItem!!.name = name
-            taskItem!!.desc = name
+            taskItem!!.desc = desc
             taskItem!!.dueTimeString = dueTimeString
 
             taskViewModel.updateTaskItem(taskItem!!)

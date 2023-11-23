@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 class NotesRepository (private val noteDao: NotesDao)
 {
-    val allNotes: LiveData<List<Note>> = noteDao.getAllNotes()
+    val allNotes: Flow<List<Note>> = noteDao.getAllNotes()
 
     @WorkerThread
     suspend fun insertNote(note: Note)
@@ -21,7 +21,7 @@ class NotesRepository (private val noteDao: NotesDao)
     {
         noteDao.update(note)
     }
-    suspend fun deleteTaskItem(note: Note)
+    suspend fun deleteNote(note: Note)
     {
         noteDao.delete(note)
     }

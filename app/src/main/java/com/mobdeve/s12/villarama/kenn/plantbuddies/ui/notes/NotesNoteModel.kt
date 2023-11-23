@@ -21,7 +21,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "notes")
 data class Note(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "title") var title: String,
     @ColumnInfo(name = "content") var content: String,
     @ColumnInfo(name = "date") var date: String,
@@ -30,8 +29,11 @@ data class Note(
     @ColumnInfo(name = "toggleWater") var toggleWater: Boolean,
     @ColumnInfo(name = "toggleSeeds") var toggleSeeds: Boolean,
     @ColumnInfo(name = "toggleInsect") var toggleInsect: Boolean,
-    @ColumnInfo(name = "toggleHarvest") var toggleHarvest: Boolean
+    @ColumnInfo(name = "toggleHarvest") var toggleHarvest: Boolean,
+    @PrimaryKey(autoGenerate = true) var id: Int = 0
 )
+
+// kenn has other functions here
 
 //class Note(
 //    @ColumnInfo(name = "name") var name: String,

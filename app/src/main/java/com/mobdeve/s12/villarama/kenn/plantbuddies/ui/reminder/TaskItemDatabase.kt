@@ -4,11 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.NotesDao
+import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.Note
 
-@Database(entities = [TaskItem::class], version = 1, exportSchema = false)
+@Database(entities = [TaskItem::class, Note::class], version = 1, exportSchema = false)
 public abstract class TaskItemDatabase : RoomDatabase()
 {
     abstract fun taskItemDao(): TaskItemDao
+    abstract fun noteDao(): NotesDao
 
     companion object
     {
@@ -28,5 +31,6 @@ public abstract class TaskItemDatabase : RoomDatabase()
                 instance
             }
         }
+
     }
 }

@@ -11,7 +11,7 @@ import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.NoteItemBinding
 import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.TaskItemCellBinding
 
 class NotesAdapter(
-    private val notesList: MutableList<Note>, // kenn has List not MutableList
+    private val notesList: List<Note>, // kenn has List not MutableList
     private val listener: NoteActionsListener
 ) : RecyclerView.Adapter<NoteViewHolder>() {
 
