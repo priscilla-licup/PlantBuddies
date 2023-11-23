@@ -5,6 +5,9 @@ import androidx.room.*
 
 @Dao
 interface NotesDao {
+    @Query("SELECT * FROM notes")
+    fun getAllNotes(): LiveData<List<Note>>
+
     @Insert
     fun insert(note: Note)
 
@@ -13,9 +16,5 @@ interface NotesDao {
 
     @Delete
     fun delete(note: Note)
-
-    @Query("SELECT * FROM notes")
-    fun getAllNotes(): LiveData<List<Note>>
-
 
 }

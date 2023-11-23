@@ -7,40 +7,23 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mobdeve.s12.villarama.kenn.plantbuddies.R
+import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.NoteItemBinding
+import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.TaskItemCellBinding
 
 class NotesAdapter(
-    var notesList: MutableList<Note>,
+    private val notesList: MutableList<Note>, // kenn has List not MutableList
     private val listener: NoteActionsListener
-) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
-
-    class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val titleTextView: TextView = itemView.findViewById(R.id.noteTitleTextView)
-        val contentTextView: TextView = itemView.findViewById(R.id.noteContentTextView)
-        val dateTextView: TextView = itemView.findViewById(R.id.noteDateTextView)
-        val deleteButton: Button = itemView.findViewById(R.id.deleteNoteButton)
-        // Other views...
-    }
+) : RecyclerView.Adapter<NoteViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.note_item, parent, false)
-        return NoteViewHolder(itemView)
-
+//        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.note_item, parent, false)
+        val from = LayoutInflater.from(parent.context)
+        val binding = NoteItemBinding.inflate(from, parent, false)
+        return NoteViewHolder(parent.context, binding, listener)
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
-        // Bind data to the views
-        val currentNote = notesList[position]
-        holder.titleTextView.text = currentNote.title
-        holder.contentTextView.text = currentNote.content
-        holder.dateTextView.text = currentNote.date
-        holder.itemView.setOnClickListener {
-            // Invoke edit action
-            listener.onNoteEdit(currentNote)
-        }
-        holder.deleteButton.setOnClickListener {
-            // Invoke delete action
-            listener.onNoteDelete(currentNote)
-        }
+        holder.bindNote(notesList[position])
     }
 
     override fun getItemCount() = notesList.size
