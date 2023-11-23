@@ -24,6 +24,7 @@ import java.util.Locale
 import kotlin.random.Random
 
 class Notes : Fragment(), NoteActionsListener {
+
     private val notesViewModel: NotesViewModel by lazy {
         ViewModelProvider(this).get(NotesViewModel::class.java)
     }
@@ -41,10 +42,10 @@ class Notes : Fragment(), NoteActionsListener {
     private val ADD_NOTE_REQUEST = 1
     private val EDIT_NOTE_REQUEST = 2
 
-    private fun addNewNote(note: Note) {
-        notesList.add(note)
-        notesAdapter.notifyItemInserted(notesList.size - 1)
-    }
+//    private fun addNewNote(note: Note) {
+//        notesList.add(note)
+//        notesAdapter.notifyItemInserted(notesList.size - 1)
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,12 +58,22 @@ class Notes : Fragment(), NoteActionsListener {
         _binding = FragmentNotesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        // Initialize the adapter with an empty list or initial data
+        notesAdapter = NotesAdapter(mutableListOf(), this)
 
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
-        notesAdapter = NotesAdapter(notesViewModel.notesList.value ?: mutableListOf(), this)
-//      notesAdapter = NotesAdapter(notesList, this)
         recyclerView.adapter = notesAdapter
+//        notesAdapter = NotesAdapter(notesViewModel.notesList.value ?: mutableListOf(), this)
+//      notesAdapter = NotesAdapter(notesList, this)
+
+        notesViewModel.notesList.observe(viewLifecycleOwner, Observer { updatedList ->
+            // Convert the List to a MutableList
+            Log.d("NotesFragment", "Updated notes list: $updatedList")
+            notesAdapter.notesList = updatedList.toMutableList()
+            notesAdapter.notifyDataSetChanged()
+
+        })
 
         binding.floatingActionButton3.setOnClickListener {
             // Show a dialog or navigate to another fragment to add a new note
@@ -71,11 +82,12 @@ class Notes : Fragment(), NoteActionsListener {
             startActivityForResult(intent, ADD_NOTE_REQUEST)
         }
 
-        notesViewModel.notesList.observe(viewLifecycleOwner, Observer { updatedList ->
-            notesList.clear()
-            notesList.addAll(updatedList)
-            notesAdapter.notifyDataSetChanged()
-        })
+//        notesViewModel.notesList.observe(viewLifecycleOwner, Observer { updatedList ->
+//            notesList.clear()
+//            notesList.addAll(updatedList)
+//            notesAdapter.notifyDataSetChanged()
+//        })
+
 
         return root
     }
@@ -90,6 +102,7 @@ class Notes : Fragment(), NoteActionsListener {
 
         if (requestCode == ADD_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
             data?.let {
+                val noteId = it.getIntExtra("EXTRA_NOTE_ID", 0)
                 val title = it.getStringExtra("EXTRA_NOTE_TITLE") ?: ""
                 val content = it.getStringExtra("EXTRA_NOTE_CONTENT") ?: ""
                 val date = it.getStringExtra("EXTRA_NOTE_DATE") ?: ""
@@ -100,12 +113,14 @@ class Notes : Fragment(), NoteActionsListener {
                 val insectToggle = it.getBooleanExtra("EXTRA_INSECT_TOGGLE", false)
                 val harvestToggle = it.getBooleanExtra("EXTRA_HARVEST_TOGGLE", false)
 
-                val newNote = Note(Random.nextInt(), title, content, date, imageUri, shovelToggle, waterToggle, seedsToggle, insectToggle, harvestToggle)
+                val newNote = Note(noteId, title, content, date, imageUri, shovelToggle, waterToggle, seedsToggle, insectToggle, harvestToggle)
                 notesViewModel.addNewNote(newNote)
+                Log.d("NotesFragment", "New note added: $newNote")
+
             }
         } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
             data?.let {
-                val noteId = it.getIntExtra("EXTRA_NOTE_ID", -1)
+                val noteId = it.getIntExtra("EXTRA_NOTE_ID", 0)
                 val title = it.getStringExtra("EXTRA_NOTE_TITLE") ?: ""
                 val content = it.getStringExtra("EXTRA_NOTE_CONTENT") ?: ""
                 val date = it.getStringExtra("EXTRA_NOTE_DATE") ?: ""
@@ -118,12 +133,15 @@ class Notes : Fragment(), NoteActionsListener {
 
                 val updatedNote = Note(noteId, title, content, date, imageUri, shovelToggle, waterToggle, seedsToggle, insectToggle, harvestToggle)
                 notesViewModel.updateNote(updatedNote)
+                Log.d("NotesFragment", "Updated note: $updatedNote")
             }
         }
     }
 
     /* Edit and Delete Note */
     override fun onNoteEdit(note: Note) {
+        Log.d("NotesFragment", "Editing note: $note")
+
         val editIntent = Intent(requireContext(), AddNoteActivity::class.java).apply {
             putExtra("EXTRA_NOTE_ID", note.id)
             putExtra("EXTRA_NOTE_DATE", note.date)
@@ -143,6 +161,32 @@ class Notes : Fragment(), NoteActionsListener {
     }
 
     override fun onNoteDelete(note: Note) {
+//        notesViewModel.deleteNote(note)
+
+//        val noteEntity = Note(
+//            id = note.id,
+//            title = note.title,
+//            content = note.content,
+//            date = note.date,
+//            imageUri = note.imageUri,
+//            toggleShovel = note.toggleShovel,
+//            toggleWater = note.toggleWater,
+//            toggleSeeds = note.toggleSeeds,
+//            toggleInsect = note.toggleInsect,
+//            toggleHarvest = note.toggleHarvest
+//        )
+
         notesViewModel.deleteNote(note)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+//        val notesViewModel: NotesViewModel by viewModels()
+        notesViewModel.notesList.observe(viewLifecycleOwner, Observer { notes ->
+            // Update your RecyclerView adapter here
+            notesAdapter.notesList = notes.toMutableList()
+            notesAdapter.notifyDataSetChanged()
+        })
     }
 }

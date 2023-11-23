@@ -55,7 +55,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="610dp"
             android:layout_below="@+id/textView9"
             android:layout_marginTop="0dp">
 
@@ -66,6 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_marginTop="50dp"
             app:itemBackground="@color/white"
             app:itemIconTint="@drawable/selector"
             app:itemTextColor="@drawable/selector"

@@ -34,7 +34,7 @@ class AddNoteActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_note)
 
         // Check if there's existing data passed to this activity
-        val existingNoteId = intent.getIntExtra("EXTRA_NOTE_ID", -1) // Default to -1 if not provided
+        val existingNoteId = intent.getIntExtra("EXTRA_NOTE_ID", 0) // Default to -1 if not provided
         val existingDate = intent.getStringExtra("EXTRA_NOTE_DATE")
         val existingTitle = intent.getStringExtra("EXTRA_NOTE_TITLE")
         val existingContent = intent.getStringExtra("EXTRA_NOTE_CONTENT")
@@ -46,10 +46,15 @@ class AddNoteActivity : AppCompatActivity() {
         val existingHarvestToggle = intent.getBooleanExtra("EXTRA_HARVEST_TOGGLE", false)
 
         Log.d("AddNoteActivity", "Received Image URI for Editing: $existingImageUri")
+        Log.d("AddNoteActivity", "Received note ID: $existingNoteId")
+        Log.d("AddNoteActivity", "Received note Title: $existingTitle")
+        Log.d("AddNoteActivity", "Received note Content: $existingContent")
 
         var dateEditText = findViewById<TextView>(R.id.etNoteDate) // Replace with your actual EditText ID
         var currentDateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        dateEditText.setText(currentDateString)
+//        dateEditText.setText(currentDateString)
+        Log.d("AddNoteActivity", "Current date: $currentDateString")
+        findViewById<TextView>(R.id.etNoteDate).text = currentDateString
 
         // Populate fields if existing data is present
         if (existingNoteId != -1) {
@@ -66,6 +71,8 @@ class AddNoteActivity : AppCompatActivity() {
                 selectedImageUri = Uri.parse(existingImageUri)
                 findViewById<ImageView>(R.id.ivNoteImage).setImageURI(selectedImageUri)
             }
+        } else {
+            findViewById<TextView>(R.id.etNoteDate).text = currentDateString
         }
 
         // Button for adding/editing note
@@ -87,21 +94,28 @@ class AddNoteActivity : AppCompatActivity() {
             // Retrieve the image URI (assuming it's saved as a member variable)
             val imageUri = selectedImageUri?.toString()
 
-            val resultIntent = Intent()
 
-            resultIntent.putExtra("EXTRA_NOTE_ID", existingNoteId)  // Include the ID for updating
-            resultIntent.putExtra("EXTRA_NOTE_TITLE", title)
-            resultIntent.putExtra("EXTRA_NOTE_CONTENT", content)
-            resultIntent.putExtra("EXTRA_NOTE_DATE", noteDate)
-            resultIntent.putExtra("EXTRA_IMAGE_URI", imageUri)
-            resultIntent.putExtra("EXTRA_SHOVEL_TOGGLE", shovelToggle)
-            resultIntent.putExtra("EXTRA_WATER_TOGGLE", waterToggle)
-            resultIntent.putExtra("EXTRA_SEEDS_TOGGLE", seedsToggle)
-            resultIntent.putExtra("EXTRA_INSECT_TOGGLE", insectToggle)
-            resultIntent.putExtra("EXTRA_HARVEST_TOGGLE", harvestToggle)
+            val note = Note(
+                id = existingNoteId, // For new notes, this should be 0 (autoGenerate will handle it)
+                title = title,
+                content = content,
+                date = noteDate,
+                imageUri = imageUri,
+                toggleShovel = shovelToggle,
+                toggleWater = waterToggle,
+                toggleSeeds = seedsToggle,
+                toggleInsect = insectToggle,
+                toggleHarvest = harvestToggle
+            )
 
-            Log.d("AddNoteActivity", "Adding Image URI: $imageUri")
-            setResult(Activity.RESULT_OK, resultIntent)
+            // Get the ViewModel instance
+            val notesViewModel = ViewModelProvider(this)[NotesViewModel::class.java]
+
+            if (existingNoteId == 0) {
+                notesViewModel.addNewNote(note) // Add new note
+            } else {
+                notesViewModel.updateNote(note) // Update existing note
+            }
 
             finish()  // Finish the activity
         }

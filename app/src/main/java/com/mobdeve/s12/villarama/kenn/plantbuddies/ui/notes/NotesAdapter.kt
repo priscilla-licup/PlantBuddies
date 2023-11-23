@@ -13,7 +13,7 @@ interface NoteActionsListener {
     fun onNoteDelete(note: Note)
 }
 class NotesAdapter(
-    private var notesList: MutableList<Note>,
+    var notesList: MutableList<Note>,
     private val listener: NoteActionsListener
 ) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
 

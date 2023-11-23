@@ -37,23 +37,6 @@ private lateinit var binding: ActivityMainBinding
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-//        // Reminder Error
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            val name = "Task Notifications"
-//            val descriptionText = "Channel for task notifications"
-//            val importance = NotificationManager.IMPORTANCE_DEFAULT
-//            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-//                description = descriptionText
-//            }
-//            val notificationManager: NotificationManager =
-//                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//            notificationManager.createNotificationChannel(channel)
-//        }
     }
 
-//    companion object {
-//        const val CHANNEL_ID = "task_notification_channel"
-//        const val NOTIFICATION_ID = 123
-//        const val TASK_NAME_EXTRA = "task_name"
-//    }
 }
