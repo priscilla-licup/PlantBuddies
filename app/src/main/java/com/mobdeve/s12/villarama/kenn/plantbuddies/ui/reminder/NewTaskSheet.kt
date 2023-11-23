@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.mobdeve.s12.villarama.kenn.plantbuddies.PlantBuddyDatabase
 import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentNewTaskSheetBinding
 import java.time.LocalDate
 import java.time.LocalTime
@@ -49,7 +50,7 @@ class NewTaskSheet(var taskItem: TaskItem?) : BottomSheetDialogFragment()
         }
 
         // try to fix class instance error
-        val taskItemDao = TaskItemDatabase.getDatabase(requireContext()).taskItemDao()
+        val taskItemDao = PlantBuddyDatabase.getDatabase(requireContext()).taskItemDao()
         val repository = TaskItemRepository(taskItemDao)
         val factory = TaskItemModelFactory(repository)
         taskViewModel = ViewModelProvider(this, factory).get(TaskViewModel::class.java)

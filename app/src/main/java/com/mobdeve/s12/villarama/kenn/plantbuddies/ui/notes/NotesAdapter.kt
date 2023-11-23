@@ -26,6 +26,6 @@ class NotesAdapter(
         holder.bindNote(notesList[position])
     }
 
-    override fun getItemCount() = notesList.size
+    override fun getItemCount(): Int = notesList.size
 
 }

@@ -8,24 +8,14 @@ import android.icu.util.Calendar
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.ToggleButton
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.mobdeve.s12.villarama.kenn.plantbuddies.R
 import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentAddNoteBinding
-import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.reminder.TaskItem
-import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.reminder.TaskItemDatabase
-import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.reminder.TaskItemModelFactory
-import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.reminder.TaskItemRepository
-import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.reminder.TaskViewModel
+import com.mobdeve.s12.villarama.kenn.plantbuddies.PlantBuddyDatabase
+import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentNewTaskSheetBinding
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -39,6 +29,11 @@ class AddNoteActivity(var note: Note?) : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentAddNoteBinding
     private lateinit var notesViewModel: NotesViewModel
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentAddNoteBinding.inflate(inflater,container,false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,7 +62,7 @@ class AddNoteActivity(var note: Note?) : BottomSheetDialogFragment() {
         }
 
         // try to fix class instance error
-        val noteDao = TaskItemDatabase.getDatabase(requireContext()).noteDao()
+        val noteDao = PlantBuddyDatabase.getDatabase(requireContext()).noteDao()
         val repository = NotesRepository(noteDao)
         val factory = NoteModelFactory(repository)
         notesViewModel = ViewModelProvider(this, factory).get(NotesViewModel::class.java)
@@ -99,12 +94,22 @@ class AddNoteActivity(var note: Note?) : BottomSheetDialogFragment() {
         // Retrieve the image URI (assuming it's saved as a member variable)
         val imageUri = selectedImageUri?.toString()
 
-        val note = Note(title, content, noteDate, imageUri, shovelToggle, waterToggle, seedsToggle, insectToggle, harvestToggle)
+        //val note = Note(title, content, noteDate, imageUri, shovelToggle, waterToggle, seedsToggle, insectToggle, harvestToggle)
 
         if (note == null) {
-            notesViewModel.addNewNote(note)
+            val newNote = Note(title, content, noteDate, imageUri, shovelToggle, waterToggle, seedsToggle, insectToggle, harvestToggle)
+            notesViewModel.addNewNote(newNote)
         } else {
-            notesViewModel.updateNote(note)
+            note!!.title = title
+            note!!.content = content
+            note!!.date = noteDate
+            note!!.imageUri = imageUri
+            note!!.toggleShovel = shovelToggle
+            note!!.toggleWater = waterToggle
+            note!!.toggleSeeds = seedsToggle
+            note!!.toggleInsect = insectToggle
+            note!!.toggleHarvest = harvestToggle
+            notesViewModel.updateNote(note!!)
         }
         binding.etNoteDate.text = ""
         binding.etNoteTitle.setText("")
