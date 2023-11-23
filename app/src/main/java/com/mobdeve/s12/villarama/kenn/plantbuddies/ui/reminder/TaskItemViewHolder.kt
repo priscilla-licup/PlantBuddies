@@ -32,6 +32,9 @@ class TaskItemViewHolder(
         binding.taskCellContainer.setOnClickListener{
             clickListener.editTaskItem(taskItem)
         }
+        binding.deletebtn.setOnClickListener{
+            clickListener.deleteTaskItem(taskItem)
+        }
 
         if(taskItem.dueTime() != null)
             binding.dueTime.text = timeFormat.format(taskItem.dueTime())
