@@ -28,16 +28,6 @@ class NotesViewModel : ViewModel() {
         }
     }
 
-    fun updateNoteImageUri(noteId: Int, imageUri: Uri) {
-        val currentList = _notesList.value ?: mutableListOf()
-        val noteIndex = currentList.indexOfFirst { it.id == noteId }
-        if (noteIndex != -1) {
-            val updatedNote = currentList[noteIndex].copy(imageUri = imageUri.toString())
-            currentList[noteIndex] = updatedNote
-            _notesList.value = currentList
-        }
-    }
-
     fun deleteNote(note: Note) {
         val currentList = _notesList.value ?: mutableListOf()
         currentList.remove(note)

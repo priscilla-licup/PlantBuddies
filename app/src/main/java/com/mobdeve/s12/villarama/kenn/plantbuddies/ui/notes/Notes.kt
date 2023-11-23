@@ -126,6 +126,7 @@ class Notes : Fragment(), NoteActionsListener {
     override fun onNoteEdit(note: Note) {
         val editIntent = Intent(requireContext(), AddNoteActivity::class.java).apply {
             putExtra("EXTRA_NOTE_ID", note.id)
+            putExtra("EXTRA_NOTE_DATE", note.date)
             putExtra("EXTRA_NOTE_TITLE", note.title)
             putExtra("EXTRA_NOTE_CONTENT", note.content)
             putExtra("EXTRA_IMAGE_URI", note.imageUri)
@@ -145,4 +146,3 @@ class Notes : Fragment(), NoteActionsListener {
         notesViewModel.deleteNote(note)
     }
 }
-

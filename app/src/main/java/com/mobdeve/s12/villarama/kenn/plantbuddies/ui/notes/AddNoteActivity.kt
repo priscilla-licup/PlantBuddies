@@ -2,8 +2,10 @@ package com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes
 
 import android.Manifest
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
+import android.icu.util.Calendar
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -11,11 +13,14 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.mobdeve.s12.villarama.kenn.plantbuddies.R
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -30,6 +35,7 @@ class AddNoteActivity : AppCompatActivity() {
 
         // Check if there's existing data passed to this activity
         val existingNoteId = intent.getIntExtra("EXTRA_NOTE_ID", -1) // Default to -1 if not provided
+        val existingDate = intent.getStringExtra("EXTRA_NOTE_DATE")
         val existingTitle = intent.getStringExtra("EXTRA_NOTE_TITLE")
         val existingContent = intent.getStringExtra("EXTRA_NOTE_CONTENT")
         val existingImageUri = intent.getStringExtra("EXTRA_IMAGE_URI")
@@ -41,11 +47,13 @@ class AddNoteActivity : AppCompatActivity() {
 
         Log.d("AddNoteActivity", "Received Image URI for Editing: $existingImageUri")
 
-        // Assuming you have the note ID and access to the ViewModel
-//        notesViewModel.updateNoteImageUri(existingNoteId, existingImageUri)
+        var dateEditText = findViewById<TextView>(R.id.etNoteDate) // Replace with your actual EditText ID
+        var currentDateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        dateEditText.setText(currentDateString)
 
         // Populate fields if existing data is present
         if (existingNoteId != -1) {
+            findViewById<TextView>(R.id.etNoteDate).text = existingDate
             findViewById<EditText>(R.id.etNoteTitle).setText(existingTitle)
             findViewById<EditText>(R.id.etNoteContent).setText(existingContent)
             findViewById<ToggleButton>(R.id.toggleButton3).isChecked = existingShovelToggle
@@ -65,8 +73,9 @@ class AddNoteActivity : AppCompatActivity() {
         btnSaveNote.setOnClickListener {
             val title = findViewById<EditText>(R.id.etNoteTitle).text.toString()
             val content = findViewById<EditText>(R.id.etNoteContent).text.toString()
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val currentDate = dateFormat.format(Date())
+//            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+//            val currentDate = dateFormat.format(Date())
+            val noteDate = findViewById<TextView>(R.id.etNoteDate).text.toString()
 
             // Retrieve toggle states
             val shovelToggle = findViewById<ToggleButton>(R.id.toggleButton3).isChecked
@@ -83,7 +92,7 @@ class AddNoteActivity : AppCompatActivity() {
             resultIntent.putExtra("EXTRA_NOTE_ID", existingNoteId)  // Include the ID for updating
             resultIntent.putExtra("EXTRA_NOTE_TITLE", title)
             resultIntent.putExtra("EXTRA_NOTE_CONTENT", content)
-            resultIntent.putExtra("EXTRA_NOTE_DATE", currentDate)
+            resultIntent.putExtra("EXTRA_NOTE_DATE", noteDate)
             resultIntent.putExtra("EXTRA_IMAGE_URI", imageUri)
             resultIntent.putExtra("EXTRA_SHOVEL_TOGGLE", shovelToggle)
             resultIntent.putExtra("EXTRA_WATER_TOGGLE", waterToggle)
@@ -99,12 +108,6 @@ class AddNoteActivity : AppCompatActivity() {
 
         // Button for adding pictures to note
         findViewById<Button>(R.id.btnSelectImage).setOnClickListener {
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-//                != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(this,
-//                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-//                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE)
-//            }
 
             val selectFileIntent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
@@ -112,16 +115,20 @@ class AddNoteActivity : AppCompatActivity() {
             }
             startActivityForResult(selectFileIntent, SELECT_PICTURE_REQUEST)
         }
+
+        // To change date in adding/editing notes
+        dateEditText.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            DatePickerDialog(this, { _, year, month, dayOfMonth ->
+                val selectedDate = LocalDate.of(year, month + 1, dayOfMonth).format(
+                    DateTimeFormatter.ISO_DATE)
+                dateEditText.text = selectedDate
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == SELECT_PICTURE_REQUEST && resultCode == Activity.RESULT_OK) {
-//            selectedImageUri = data?.data
-//            Log.d("AddNoteActivity", "Selected Image URI: $selectedImageUri")
-//            findViewById<ImageView>(R.id.ivNoteImage).setImageURI(selectedImageUri)
-//            // You can save the URI or the path of the image to save it with the note
-//        }
 
         if (requestCode == SELECT_PICTURE_REQUEST && resultCode == Activity.RESULT_OK) {
             data?.data?.let { uri ->
