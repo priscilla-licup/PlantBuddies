@@ -2,6 +2,7 @@ package com.mobdeve.s12.villarama.kenn.plantbuddies.ui.gardenprofile
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
+import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentNewPlantSheetBinding
 import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.PlantItemCellBinding
 
 class GardenProfileViewHolder(
@@ -13,7 +14,7 @@ class GardenProfileViewHolder(
     fun bindPlantItem(plant: PlantItem) {
         binding.tvPlantName.text = plant.plantName
 
-        binding.cvPlantCard.setOnClickListener{
+        binding.clPlantCell.setOnClickListener{
             clickListener.onPlantEdit(plant)
         }
 

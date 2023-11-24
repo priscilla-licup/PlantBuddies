@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -54,6 +55,8 @@ class GardenProfile : Fragment(), GardenProfileClickListener {
             binding.rvPlantCardList.apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = GardenProfileAdapter(it, this@GardenProfile)
+
+
             }
         }
     }
