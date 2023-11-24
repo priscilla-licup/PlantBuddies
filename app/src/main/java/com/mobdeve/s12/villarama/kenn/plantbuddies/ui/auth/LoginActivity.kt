@@ -1,5 +1,6 @@
 package com.mobdeve.s12.villarama.kenn.plantbuddies.ui.auth
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -19,6 +20,14 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login)
+        // Inside your onCreate method
+
+        val signUpButton: Button = findViewById(R.id.signuptab)
+        signUpButton.setOnClickListener {
+            // Handle "Sign up" button click
+            val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
+            startActivity(intent)
+        }
 
         authRepository = AuthRepository(PlantBuddyDatabase.getDatabase(this))
 
