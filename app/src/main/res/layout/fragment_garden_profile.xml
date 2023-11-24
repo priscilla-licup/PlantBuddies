@@ -11,16 +11,17 @@
         android:id="@+id/tv_Username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="38dp"
         android:text="Default User"
         android:textColor="#000000"
         android:textSize="28sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigator"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.062"
+        app:layout_constraintHorizontal_bias="0.11"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.042" />
+        app:layout_constraintVertical_bias="0.05" />
 
     <TextView
         android:id="@+id/tv_MyPlants"
@@ -30,29 +31,34 @@
         android:textColor="#000000"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigator"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.844"
+        app:layout_constraintHorizontal_bias="0.847"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.041" />
+        app:layout_constraintVertical_bias="0.046" />
 
     <TextView
         android:id="@+id/tv_NumberPlants"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="288dp"
-        android:layout_marginTop="52dp"
         android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.824"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.082" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_PlantCardList"
         android:layout_width="409dp"
         android:layout_height="571dp"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="103dp" />
+        app:layout_constraintBottom_toBottomOf="@+id/bottom_navigator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.65" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/btn_AddPlant"

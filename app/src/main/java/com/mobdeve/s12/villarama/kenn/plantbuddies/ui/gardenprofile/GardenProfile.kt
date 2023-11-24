@@ -22,7 +22,7 @@ class GardenProfile : Fragment(), GardenProfileClickListener {
     private lateinit var binding: FragmentGardenProfileBinding
 
     private val gardenProfileViewModel: GardenProfileViewModel by viewModels {
-        NoteModelFactory((requireActivity().application as PlantBuddyApplication).noteRepository) // kenns
+        PlantItemModelFactory((requireActivity().application as PlantBuddyApplication).plantRepository) // kenns
     }
 
     override fun onCreateView(
@@ -38,7 +38,11 @@ class GardenProfile : Fragment(), GardenProfileClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnAddPlant.setOnClickListener {
-            NewPlantSheet(null).show(childFragmentManager, "newPlantTag")
+            try {
+                NewPlantSheet(null).show(childFragmentManager, "newPlantTag")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
         setRecyclerView()

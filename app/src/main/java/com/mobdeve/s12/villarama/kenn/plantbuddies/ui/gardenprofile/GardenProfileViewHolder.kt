@@ -11,8 +11,7 @@ class GardenProfileViewHolder(
 ): RecyclerView.ViewHolder(binding.root) {
 
     fun bindPlantItem(plant: PlantItem) {
-//        binding.noteTitleTextView.text = note.title
-//        binding.noteContentTextView.text = note.content
+        binding.tvPlantName.text = plant.plantName
 
         binding.cvPlantCard.setOnClickListener{
             clickListener.onPlantEdit(plant)
