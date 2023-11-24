@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentGardenProfileBinding
@@ -12,31 +11,32 @@ import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentGardenPro
 
 class GardenProfile : Fragment() {
 
-private var _binding: FragmentGardenProfileBinding? = null
-  // This property is only valid between onCreateView and
-  // onDestroyView.
-  private val binding get() = _binding!!
+    private lateinit var binding: FragmentGardenProfileBinding
+    private lateinit var gardenProfileViewModel: GardenProfileViewModel
 
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    val gardenProfileViewModel =
-            ViewModelProvider(this).get(GardenProfileViewModel::class.java)
-
-    _binding = FragmentGardenProfileBinding.inflate(inflater, container, false)
-    val root: View = binding.root
-
-    val textView: TextView = binding.textHome
-    gardenProfileViewModel.text.observe(viewLifecycleOwner) {
-      textView.text = it
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        gardenProfileViewModel = ViewModelProvider(this).get(GardenProfileViewModel::class.java)
+        binding = FragmentGardenProfileBinding.inflate(inflater, container, false)
+        return binding.root
     }
-    return root
-  }
 
-override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.btnAddPlant.setOnClickListener {
+            NewPlantSheet().show(childFragmentManager, "newPlantTag")
+        }
+
+        gardenProfileViewModel.plantName.observe(viewLifecycleOwner){newName ->
+            binding.tvPlantNameTemp.text = String.format("Plant Name: %s", newName)
+        }
+        gardenProfileViewModel.plantDesc.observe(viewLifecycleOwner){newDesc ->
+            binding.tvPlantDescTemp.text = String.format("Plant Name: %s", newDesc)
+        }
     }
+
 }
