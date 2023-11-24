@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         }
         val signinButton: Button = findViewById(R.id.signintab)
         signinButton.setOnClickListener {
-            // Start the RegisterActivity when the "Sign Up" button is clicked
+            // Start the LoginActivity when the "Sign in" button is clicked
             val intent = Intent(this@MainActivity, LoginActivity::class.java)
             startActivity(intent)
         }

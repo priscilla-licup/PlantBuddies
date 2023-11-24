@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.mobdeve.s12.villarama.kenn.plantbuddies.PlantBuddyDatabase
 import com.mobdeve.s12.villarama.kenn.plantbuddies.R
+import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,7 +29,12 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
             startActivity(intent)
         }
-
+        val signinButton: Button = findViewById(R.id.signintab)
+        signinButton.setOnClickListener {
+            // Handle "Sign in" button click
+            val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
+            startActivity(intent)
+        }
         authRepository = AuthRepository(PlantBuddyDatabase.getDatabase(this))
 
         val usernameEditText: EditText = findViewById(R.id.username)
@@ -44,7 +50,10 @@ class LoginActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     if (loginSuccessful) {
+                        val binding = ActivityMainBinding.inflate(layoutInflater)
+                        setContentView(binding.root)
                         Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT).show()
+
                     } else {
                         Toast.makeText(this@LoginActivity, "Invalid login credentials", Toast.LENGTH_SHORT).show()
                     }
