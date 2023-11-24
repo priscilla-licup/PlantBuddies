@@ -20,6 +20,8 @@
             android:name=".ui.reminder.AlarmReceiver"
             android:enabled="true"
             android:exported="false" />
+        <activity android:name=".ui.auth.RegisterActivity" />
+        <activity android:name=".ui.auth.LoginActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -32,6 +34,7 @@
         </activity>
         <activity android:name=".ui.notes.AddNoteActivity">
         </activity>
+
     </application>
 
 </manifest>
