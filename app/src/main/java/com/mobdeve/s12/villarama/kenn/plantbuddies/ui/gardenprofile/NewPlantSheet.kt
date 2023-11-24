@@ -12,7 +12,7 @@ import com.mobdeve.s12.villarama.kenn.plantbuddies.MainActivity
 import com.mobdeve.s12.villarama.kenn.plantbuddies.R
 import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentNewPlantSheetBinding
 
-class NewPlantSheet : BottomSheetDialogFragment() {
+class NewPlantSheet(var plant: PlantItem?) : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentNewPlantSheetBinding
     private lateinit var gardenProfileViewModel: GardenProfileViewModel
@@ -37,12 +37,8 @@ class NewPlantSheet : BottomSheetDialogFragment() {
         val newPlantName = binding.etNewPlantName.text.toString()
         val newPlantDesc = binding.etNewPlantDesc.text.toString()
 
-        Log.d("NewPlantSheet", "Adding new plant: $newPlantName, $newPlantDesc")
+        Log.d("NewPlantSheet", "Adding new plant: $newPlantName: $newPlantDesc")
 
-        gardenProfileViewModel.plantName.value = newPlantName
-        gardenProfileViewModel.plantDesc.value = newPlantDesc
-        binding.etNewPlantName.setText("")
-        binding.etNewPlantDesc.setText("")
         dismiss()
     }
 

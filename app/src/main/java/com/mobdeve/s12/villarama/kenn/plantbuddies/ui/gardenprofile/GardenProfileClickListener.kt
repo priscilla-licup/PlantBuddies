@@ -1,5 +1,6 @@
 package com.mobdeve.s12.villarama.kenn.plantbuddies.ui.gardenprofile
 
-class GardenProfileClickListener {
-    
+interface GardenProfileClickListener {
+    fun onPlantEdit(plant: PlantItem)
+    fun onPlantDelete(plant: PlantItem)
 }

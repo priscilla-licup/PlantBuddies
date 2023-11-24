@@ -5,21 +5,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.mobdeve.s12.villarama.kenn.plantbuddies.PlantBuddyApplication
 import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentGardenProfileBinding
+import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.AddNoteActivity
+import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.NoteActionsListener
+import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.NoteModelFactory
+import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.NotesAdapter
+import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.NotesViewModel
 
 
-class GardenProfile : Fragment() {
+class GardenProfile : Fragment(), GardenProfileClickListener {
 
     private lateinit var binding: FragmentGardenProfileBinding
-    private lateinit var gardenProfileViewModel: GardenProfileViewModel
+
+    private val gardenProfileViewModel: GardenProfileViewModel by viewModels {
+        NoteModelFactory((requireActivity().application as PlantBuddyApplication).noteRepository) // kenns
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        gardenProfileViewModel = ViewModelProvider(this).get(GardenProfileViewModel::class.java)
         binding = FragmentGardenProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -28,15 +38,28 @@ class GardenProfile : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnAddPlant.setOnClickListener {
-            NewPlantSheet().show(childFragmentManager, "newPlantTag")
+            NewPlantSheet(null).show(childFragmentManager, "newPlantTag")
         }
 
-        gardenProfileViewModel.plantName.observe(viewLifecycleOwner){newName ->
-            binding.tvPlantNameTemp.text = String.format("Plant Name: %s", newName)
+        setRecyclerView()
+    }
+
+    private fun setRecyclerView() {
+
+        gardenProfileViewModel.plantList.observe(viewLifecycleOwner){
+            binding.rvPlantCardList.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = GardenProfileAdapter(it, this@GardenProfile)
+            }
         }
-        gardenProfileViewModel.plantDesc.observe(viewLifecycleOwner){newDesc ->
-            binding.tvPlantDescTemp.text = String.format("Plant Name: %s", newDesc)
-        }
+    }
+
+    override fun onPlantEdit(plant: PlantItem) {
+        NewPlantSheet(plant).show(childFragmentManager, "newPlantTag")
+    }
+
+    override fun onPlantDelete(plant: PlantItem) {
+        gardenProfileViewModel.deletePlant(plant)
     }
 
 }

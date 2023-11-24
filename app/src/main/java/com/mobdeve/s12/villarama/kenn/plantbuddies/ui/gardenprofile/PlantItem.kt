@@ -6,10 +6,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "plant_item_table")
 class PlantItem (
-    @ColumnInfo(name = "plant_name") var plant_name: String,
-    @ColumnInfo(name = "plant_desc") var plant_desc: String,
+    @ColumnInfo(name = "plant_name") var plantName: String,
+    @ColumnInfo(name = "plant_desc") var plantDesc: String,
+    @ColumnInfo(name = "plant_imageUri") var imageUri: String?,
     @PrimaryKey(autoGenerate = true) var id: Int = 0
 )
-
-
 

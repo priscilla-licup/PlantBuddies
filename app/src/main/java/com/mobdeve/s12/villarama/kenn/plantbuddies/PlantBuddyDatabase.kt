@@ -6,17 +6,20 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.auth.User
 import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.auth.UserDao
+import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.gardenprofile.PlantDao
+import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.gardenprofile.PlantItem
 import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.NotesDao
 import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.Note
 import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.reminder.TaskItem
 import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.reminder.TaskItemDao
 
-@Database(entities = [TaskItem::class, Note::class, User::class], version = 1, exportSchema = false)
+@Database(entities = [TaskItem::class, Note::class, User::class, PlantItem::class], version = 1, exportSchema = false)
 public abstract class PlantBuddyDatabase : RoomDatabase()
 {
     abstract fun taskItemDao(): TaskItemDao
     abstract fun noteDao(): NotesDao
     abstract fun userDao(): UserDao
+    abstract fun plantDao(): PlantDao
 
     companion object
     {
