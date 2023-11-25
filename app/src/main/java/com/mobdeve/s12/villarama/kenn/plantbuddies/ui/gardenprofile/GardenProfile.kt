@@ -4,39 +4,43 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mobdeve.s12.villarama.kenn.plantbuddies.PlantBuddyApplication
 import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentGardenProfileBinding
-import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.AddNoteActivity
-import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.NoteActionsListener
-import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.NoteModelFactory
-import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.NotesAdapter
-import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.notes.NotesViewModel
 
 
 class GardenProfile : Fragment(), GardenProfileClickListener {
 
     private lateinit var binding: FragmentGardenProfileBinding
+//    private lateinit var binding2: WelcomePageBinding
+    private lateinit var usernameViewModel: UsernameViewModel
 
     private val gardenProfileViewModel: GardenProfileViewModel by viewModels {
         PlantItemModelFactory((requireActivity().application as PlantBuddyApplication).plantRepository) // kenns
     }
 
     override fun onCreateView(
+
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentGardenProfileBinding.inflate(inflater, container, false)
+
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        usernameViewModel = ViewModelProvider(requireActivity()).get(UsernameViewModel::class.java)
+        usernameViewModel.username.observe(viewLifecycleOwner) { username ->
+            binding.tvUsername.text = username
+        }
 
         binding.btnAddPlant.setOnClickListener {
             try {

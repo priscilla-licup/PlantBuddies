@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -14,6 +15,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mobdeve.s12.villarama.kenn.plantbuddies.PlantBuddyDatabase
 import com.mobdeve.s12.villarama.kenn.plantbuddies.R
 import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.ActivityMainBinding
+import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentGardenProfileBinding
+import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.WelcomePageBinding
+import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.gardenprofile.UsernameViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,11 +27,13 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var authRepository: AuthRepository
     private lateinit var binding: ActivityMainBinding
+    private lateinit var usernameViewModel: UsernameViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login)
         // Inside your onCreate method
+        usernameViewModel = ViewModelProvider(this).get(UsernameViewModel::class.java)
 
         val signUpButton: Button = findViewById(R.id.signuptab)
         signUpButton.setOnClickListener {
@@ -56,9 +62,11 @@ class LoginActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     if (loginSuccessful) {
-//                        val binding = ActivityMainBinding.inflate(layoutInflater)
-//                        setContentView(binding.root)
+
                         binding = ActivityMainBinding.inflate(layoutInflater)
+                        usernameViewModel.username.value = username
+
+
                         setContentView(binding.root)
                         val navView: BottomNavigationView = binding.navView
 
