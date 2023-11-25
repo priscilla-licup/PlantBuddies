@@ -1,6 +1,5 @@
 package com.mobdeve.s12.villarama.kenn.plantbuddies.ui.gardenprofile
 
-import android.R.attr
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -21,7 +20,7 @@ import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentNewPlantS
 
 class NewPlantSheet(var plant: PlantItem?) : BottomSheetDialogFragment() {
 
-    private val CAMERA_REQUEST = 1888
+    private val CAMERA_REQUEST = 123
 
     private val SELECT_PICTURE_REQUEST = 3
     private var selectedImageUri: Uri? = null
@@ -45,8 +44,9 @@ class NewPlantSheet(var plant: PlantItem?) : BottomSheetDialogFragment() {
 //            binding.etNoteDate.text = editable.newEditable(note!!.date)
 //            binding.etNoteTitle.text = editable.newEditable(note!!.title)
             binding.tvNewPlant.text = "Edit Plant"
-            binding.btnAddNewPlant.text = "Edit"
-            binding.btnAddImage.text = "Edit Image"
+            binding.btnAddNewPlant.text = "Save Changes"
+            binding.btnTakeImage.text = "Take Image"
+            binding.btnChooseImage.text = "Choose Image"
 
             binding.etNewPlantName.text = editable.newEditable(plant!!.plantName)
             binding.etNewPlantDesc.text = editable.newEditable(plant!!.plantDesc)
@@ -67,7 +67,11 @@ class NewPlantSheet(var plant: PlantItem?) : BottomSheetDialogFragment() {
             savePlant()
         }
 
-        binding.btnAddImage.setOnClickListener {
+        binding.btnTakeImage.setOnClickListener {
+            takeImage()
+        }
+
+        binding.btnChooseImage.setOnClickListener {
             chooseImage()
         }
     }
@@ -99,12 +103,16 @@ class NewPlantSheet(var plant: PlantItem?) : BottomSheetDialogFragment() {
         dismiss()
     }
 
-    private fun chooseImage() {
-
-//        TEMPORARY
+    private fun takeImage() {
 //        val Intent3 = Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)
 //        startActivity(Intent3)
 
+        // WORKING ON IT
+        val camera_intent = Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)
+        startActivityForResult(camera_intent, CAMERA_REQUEST)
+    }
+
+    private fun chooseImage(){
         val selectFileIntent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "image/*"
@@ -113,16 +121,23 @@ class NewPlantSheet(var plant: PlantItem?) : BottomSheetDialogFragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == SELECT_PICTURE_REQUEST && resultCode == Activity.RESULT_OK) {
             data?.data?.let { uri ->
                 selectedImageUri = uri
                 binding.ivPlantImage.setImageURI(selectedImageUri)
+            }
+        } else if (requestCode == CAMERA_REQUEST) {
 
+            chooseImage()
+
+            data?.data?.let { uri ->
+                selectedImageUri = uri
+                binding.ivPlantImage.setImageURI(selectedImageUri)
             }
         }
     }
+
 
 }
