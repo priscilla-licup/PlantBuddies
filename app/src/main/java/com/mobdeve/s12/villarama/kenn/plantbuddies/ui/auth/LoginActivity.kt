@@ -15,8 +15,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mobdeve.s12.villarama.kenn.plantbuddies.PlantBuddyDatabase
 import com.mobdeve.s12.villarama.kenn.plantbuddies.R
 import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.ActivityMainBinding
-import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.FragmentGardenProfileBinding
-import com.mobdeve.s12.villarama.kenn.plantbuddies.databinding.WelcomePageBinding
 import com.mobdeve.s12.villarama.kenn.plantbuddies.ui.gardenprofile.UsernameViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
