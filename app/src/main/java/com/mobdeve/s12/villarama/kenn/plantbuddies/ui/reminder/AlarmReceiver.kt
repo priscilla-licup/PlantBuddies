@@ -3,6 +3,7 @@ package com.mobdeve.s12.villarama.kenn.plantbuddies.ui.reminder
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -39,6 +40,17 @@ class AlarmReceiver : BroadcastReceiver() {
     private fun showNotification(context: Context?, taskName: String?) {
         createNotificationChannel(context)
 
+        val resultIntent = Intent(context, MainActivity::class.java)
+        resultIntent.putExtra(TASK_NAME_EXTRA, taskName)
+
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            resultIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+
         context?.let {
             val builder = NotificationCompat.Builder(it, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_gardenprofile)
@@ -46,6 +58,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 .setContentText("Reminding you of '$taskName'!")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
 
             with(NotificationManagerCompat.from(it)) {
                 if (ActivityCompat.checkSelfPermission(
